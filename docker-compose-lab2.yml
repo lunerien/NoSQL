@@ -1,0 +1,36 @@
+version: '3.3'
+networks:
+  mongo_mongo_python:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.6.0.0/24
+
+services:
+  mongo1:
+    container_name: "mongo1"
+    image: mongo
+    ports:
+      - "8882:27017"
+    networks:
+      mongo_mongo_python:
+          ipv4_address: 10.6.0.2
+  mongo2:
+    container_name: "mongo2"
+    image: mongo
+    ports:
+      - "8883:27017"
+    networks:
+      mongo_mongo_python:
+          ipv4_address: 10.6.0.3
+  python:
+    image: debian_vir
+    ports:
+      - "8884:22"
+    networks:
+      mongo_mongo_python:
+        ipv4_address: 10.6.0.4
+    container_name: "python"
+    volumes:
+      - "./py3:/PY3"
+    command: tail -f /dev/null

@@ -1,0 +1,42 @@
+version: '3'
+networks:
+  sql_mongo_python:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.5.0.0/24
+
+services: 
+  db1:                                                                                                                                                             
+    image: mariadb                                                                                                                                                
+    restart: always                                                                                                                                                
+    #volumes:                                                                                                                                                       
+    #  - /tmp/MARIA/1:/var/lib/mysql                                                                                                                                
+    environment:                                                                                                                                                   
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: test                                                                                                    
+      MYSQL_DATABASE: database
+    ports:                                                                                                                                                                                
+      - "8881:3306"
+    networks:
+      sql_mongo_python:
+        ipv4_address: 10.5.0.3
+
+  dbmongo:
+    image: mongo
+    restart: always
+    ports:
+      - "8882:27017"
+    networks:
+      sql_mongo_python:
+        ipv4_address: 10.5.0.4
+  conn:
+    image: debian_vir
+    command: tail -f /dev/null
+    volumes: 
+      - ./py3:/PY3
+    restart: always
+    networks:
+      sql_mongo_python:
+        ipv4_address: 10.5.0.5
